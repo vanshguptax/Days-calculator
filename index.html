@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-r from-purple-400 to-pink-500 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full">
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Age Calculator</h1>
+        <form id="birthForm" class="space-y-4">
+            <div>
+                <label for="birthdate" class="block text-sm font-medium text-gray-700 mb-1">Enter your date of birth:</label>
+                <input type="date" id="birthdate" name="birthdate" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+            </div>
+            <button type="submit"
+                class="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+                Calculate
+            </button>
+        </form>
+        <div id="result" class="mt-6 space-y-4 hidden">
+            <p id="ageInDays" class="text-lg font-semibold text-gray-800"></p>
+            <div class="space-y-2">
+                <h2 class="text-xl font-bold text-gray-800">Milestone Days:</h2>
+                <p id="day5000" class="text-gray-600"></p>
+                <p id="day10000" class="text-gray-600"></p>
+                <p id="day15000" class="text-gray-600"></p>
+                <p id="day20000" class="text-gray-600"></p>
+            </div>
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Share your result:</h3>
+                <div class="flex space-x-4">
+                    <button id="shareWhatsApp" class="text-green-600 hover:text-green-700">
+                        <i class="fab fa-whatsapp fa-2x"></i>
+                    </button>
+                    <button id="shareFacebook" class="text-blue-600 hover:text-blue-700">
+                        <i class="fab fa-facebook fa-2x"></i>
+                    </button>
+                    <button id="shareInstagram" class="text-pink-600 hover:text-pink-700">
+                        <i class="fab fa-instagram fa-2x"></i>
+                    </button>
+                    <button id="shareX" class="text-black hover:text-gray-700">
+                        <i class="fab fa-x-twitter fa-2x"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8 text-center text-sm text-gray-500">
+            <p>&copy; 2024 Vansh Gupta. All rights reserved.</p>
+            <a href="https://www.instagram.com/vansh_reads/" target="_blank" rel="noopener noreferrer" class="text-purple-600 hover:text-purple-700">
+                Follow me on Instagram <i class="fab fa-instagram"></i>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('birthForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const birthdate = new Date(document.getElementById('birthdate').value);
+            const today = new Date();
+            const ageInDays = Math.floor((today - birthdate) / (1000 * 60 * 60 * 24));
+
+            document.getElementById('ageInDays').textContent = `You are ${ageInDays} days old today.`;
+
+            const milestoneDays = [5000, 10000, 15000, 20000];
+            milestoneDays.forEach(days => {
+                const milestoneDate = new Date(birthdate.getTime() + days * 24 * 60 * 60 * 1000);
+                const formattedDate = milestoneDate.toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                document.getElementById(`day${days}`).textContent = `Your ${days}th day: ${formattedDate}`;
+            });
+
+            document.getElementById('result').classList.remove('hidden');
+        });
+
+        function shareResult(platform) {
+            const ageInDays = document.getElementById('ageInDays').textContent;
+            const milestones = Array.from(document.querySelectorAll('#result p')).map(p => p.textContent).join('\n');
+            const shareText = `${ageInDays}\n\nMy milestone days:\n${milestones}`;
+            const encodedShareText = encodeURIComponent(shareText);
+
+            switch (platform) {
+                case 'whatsapp':
+                    window.open(`https://wa.me/?text=${encodedShareText}`);
+                    break;
+                case 'facebook':
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodedShareText}`);
+                    break;
+                case 'instagram':
+                    alert('To share on Instagram:\n1. Screenshot this result\n2. Open Instagram\n3. Create a new post with the screenshot\n4. Copy and paste the following in your caption:\n\n' + shareText);
+                    break;
+                case 'x':
+                    window.open(`https://twitter.com/intent/tweet?text=${encodedShareText}`);
+                    break;
+            }
+        }
+
+        document.getElementById('shareWhatsApp').addEventListener('click', () => shareResult('whatsapp'));
+        document.getElementById('shareFacebook').addEventListener('click', () => shareResult('facebook'));
+        document.getElementById('shareInstagram').addEventListener('click', () => shareResult('instagram'));
+        document.getElementById('shareX').addEventListener('click', () => shareResult('x'));
+    </script>
+</body>
+</html
